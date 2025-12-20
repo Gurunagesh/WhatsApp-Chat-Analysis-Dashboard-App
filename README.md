@@ -176,8 +176,8 @@ streamlit run app.py
 
 ## Demo
 
-🔗 *Live demo or video walkthrough link goes here*
-(e.g., Streamlit Community Cloud or YouTube)
+🔗 *Live demo walkthrough link goes here*
+((https://gurunagesh1477-whatsapp-chat-analysis-dashboard-app.hf.space))
 
 ---
 
