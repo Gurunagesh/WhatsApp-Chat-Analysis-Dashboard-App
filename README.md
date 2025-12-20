@@ -107,6 +107,12 @@ These insights act as **benchmarks for engagement, communication health, and int
 
 ---
 
+## Demo
+
+🔗 *Live demo walkthrough link goes here*
+((https://gurunagesh1477-whatsapp-chat-analysis-dashboard-app.hf.space))
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -171,13 +177,6 @@ streamlit run app.py
 3. Tap **Export Chat**
 4. Select **Without Media**
 5. Send the `.zip` file via Mail
-
----
-
-## Demo
-
-🔗 *Live demo walkthrough link goes here*
-((https://gurunagesh1477-whatsapp-chat-analysis-dashboard-app.hf.space))
 
 ---
 
