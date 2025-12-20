@@ -18,4 +18,4 @@ jobs:
           HF_TOKEN: ${{ secrets.HF_TOKEN }} # Uses the secret you saved earlier
         run: |
           # Replace <YOUR_HF_USERNAME> and <YOUR_SPACE_NAME> below
-          git push --force https://<gurunagesh1477>:$HF_TOKEN@huggingface.co/spaces/<gurunagesh1477>/<WhatsApp-Chat-Analysis-Dashboard-App> main
+          git push --force https://gurunagesh1477:$HF_TOKEN@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App main
