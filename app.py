@@ -47,7 +47,7 @@ uploaded_files = st.sidebar.file_uploader('Upload WhatsApp Chat Zip Files (".zip
 # Initialize chat_df as None or empty to handle cases where no file is uploaded yet
 chat_df = None
 
-sample_zip_filename = 'sample_chat.zip'
+sample_zip_filename = 'sample_whatsapp_chat.zip'
 
 # Check if files are uploaded or use sample data
 if uploaded_files:
@@ -129,7 +129,7 @@ if uploaded_files:
                     st.metric(label="Average Message Length", value=f"{metrics['average_message_length']:.2f} chars")
 
                 st.subheader("Top 10 Senders")
-                st.dataframe(metrics['messages_per_participant'].head(10), width=True)
+                st.dataframe(metrics['messages_per_participant'].head(10), use_container_width=True)
 
                 st.header("Interactive Charts")
 
@@ -140,8 +140,8 @@ if uploaded_files:
                 fig_hourly = px.bar(hourly_df, x='Hour of Day', y='Number of Messages',
                                     title='Interactive Distribution of Messages per Hour of Day',
                                     labels={'Hour of Day': 'Hour of Day', 'Number of Messages': 'Number of Messages'},
-                                    color_discrete_sequence=px.colors.sequential.Viridis[::-1])
-                st.plotly_chart(fig_hourly, width=True)
+                                    color_discrete_sequence=px.colors.sequential.Viridis)
+                st.plotly_chart(fig_hourly, use_container_width=True)
 
                 # Chart 2: Distribution of Messages per Day of Week
                 st.subheader("Message Distribution per Day of Week")
@@ -182,39 +182,47 @@ if uploaded_files:
                 st.header("Message Content Analysis")
 
                 st.subheader("Top 20 Most Frequent Words")
-                st.dataframe(content_analysis_results['top_20_words'], width=True)
+                st.dataframe(content_analysis_results['top_20_words'], use_container_width=True)
 
                 # Word Cloud Visualization
                 st.subheader("Word Cloud")
+                
                 if content_analysis_results['word_cloud_image']:
                     st.image(content_analysis_results['word_cloud_image'], caption="Most Frequent Words (excluding common terms)")
                 else:
                     st.warning("Word cloud could not be generated. Please ensure there is enough data for analysis.")
 
                 st.subheader("Top 20 Most Frequent Bigrams")
-                st.dataframe(content_analysis_results['top_20_bigrams'], width=True)
+                st.dataframe(content_analysis_results['top_20_bigrams'], use_container_width=True)
 
                 # Keyphrase Extraction
                 st.subheader("Top Keyphrases")
-                st.dataframe(content_analysis_results['top_keyphrases'], width=True)
+                st.dataframe(content_analysis_results['top_keyphrases'], use_container_width=True)
+
+                # Topic Modeling Results
+                st.subheader("Topic Modeling (LDA) Results")
+                if content_analysis_results['topic_modeling_results'] is not None:
+                    st.dataframe(content_analysis_results['topic_modeling_results'], use_container_width=True)
+                else:
+                    st.info("Not enough data to perform topic modeling or no clear topics found.")
 
                 st.subheader("Sentiment Analysis Distribution")
-                st.dataframe(content_analysis_results['sentiment_distribution'], width=True)
+                st.dataframe(content_analysis_results['sentiment_distribution'], use_container_width=True)
 
                 st.subheader("Sample Messages by Sentiment")
                 col_pos, col_neg, col_neu = st.columns(3)
                 with col_pos:
                     st.info("Sample Positive Messages:")
-                    st.dataframe(content_analysis_results['sample_positive_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_positive_messages'], use_container_width=True)
                 with col_neg:
                     st.warning("Sample Negative Messages:")
-                    st.dataframe(content_analysis_results['sample_negative_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_negative_messages'], use_container_width=True)
                 with col_neu:
                     st.neutral("Sample Neutral Messages:")
-                    st.dataframe(content_analysis_results['sample_neutral_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_neutral_messages'], use_container_width=True)
 
                 with st.expander("View Raw Chat Data"):
-                    st.dataframe(filtered_df, width=True)
+                    st.dataframe(filtered_df, use_container_width=True)
 
 else:
     # Use sample data if no files are uploaded
@@ -287,7 +295,7 @@ else:
                     st.metric(label="Average Message Length", value=f"{metrics['average_message_length']:.2f} chars")
 
                 st.subheader("Top 10 Senders")
-                st.dataframe(metrics['messages_per_participant'].head(10), width=True)
+                st.dataframe(metrics['messages_per_participant'].head(10), use_container_width=True)
 
                 st.header("Interactive Charts")
 
@@ -298,8 +306,8 @@ else:
                 fig_hourly = px.bar(hourly_df, x='Hour of Day', y='Number of Messages',
                                     title='Interactive Distribution of Messages per Hour of Day',
                                     labels={'Hour of Day': 'Hour of Day', 'Number of Messages': 'Number of Messages'},
-                                    color_discrete_sequence=px.colors.sequential.Viridis[::-1])
-                st.plotly_chart(fig_hourly, width=True)
+                                    color_discrete_sequence=px.colors.sequential.Viridis)
+                st.plotly_chart(fig_hourly, use_container_width=True)
 
                 # Chart 2: Distribution of Messages per Day of Week
                 st.subheader("Message Distribution per Day of Week")
@@ -340,39 +348,47 @@ else:
                 st.header("Message Content Analysis")
 
                 st.subheader("Top 20 Most Frequent Words")
-                st.dataframe(content_analysis_results['top_20_words'], width=True)
+                st.dataframe(content_analysis_results['top_20_words'], use_container_width=True)
 
                 # Word Cloud Visualization
                 st.subheader("Word Cloud")
+                
                 if content_analysis_results['word_cloud_image']:
                     st.image(content_analysis_results['word_cloud_image'], caption="Most Frequent Words (excluding common terms)")
                 else:
                     st.warning("Word cloud could not be generated. Please ensure there is enough data for analysis.")
 
                 st.subheader("Top 20 Most Frequent Bigrams")
-                st.dataframe(content_analysis_results['top_20_bigrams'], width=True)
+                st.dataframe(content_analysis_results['top_20_bigrams'], use_container_width=True)
 
                 # Keyphrase Extraction
                 st.subheader("Top Keyphrases")
-                st.dataframe(content_analysis_results['top_keyphrases'], width=True)
+                st.dataframe(content_analysis_results['top_keyphrases'], use_container_width=True)
+
+                # Topic Modeling Results
+                st.subheader("Topic Modeling (LDA) Results")
+                if content_analysis_results['topic_modeling_results'] is not None:
+                    st.dataframe(content_analysis_results['topic_modeling_results'], use_container_width=True)
+                else:
+                    st.info("Not enough data to perform topic modeling or no clear topics found.")
 
                 st.subheader("Sentiment Analysis Distribution")
-                st.dataframe(content_analysis_results['sentiment_distribution'], width=True)
+                st.dataframe(content_analysis_results['sentiment_distribution'], use_container_width=True)
 
                 st.subheader("Sample Messages by Sentiment")
                 col_pos, col_neg, col_neu = st.columns(3)
                 with col_pos:
                     st.info("Sample Positive Messages:")
-                    st.dataframe(content_analysis_results['sample_positive_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_positive_messages'], use_container_width=True)
                 with col_neg:
                     st.warning("Sample Negative Messages:")
-                    st.dataframe(content_analysis_results['sample_negative_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_negative_messages'], use_container_width=True)
                 with col_neu:
                     st.info("Sample Neutral Messages:")
-                    st.dataframe(content_analysis_results['sample_neutral_messages'], width=True)
+                    st.dataframe(content_analysis_results['sample_neutral_messages'], use_container_width=True)
 
                 with st.expander("View Raw Chat Data"):
-                    st.dataframe(filtered_df, width=True)
+                    st.dataframe(filtered_df, use_container_width=True)
 
     else:
         st.warning("No sample_chat.zip found. Please upload your chat files or ensure 'sample_chat.zip' is in the correct directory.")

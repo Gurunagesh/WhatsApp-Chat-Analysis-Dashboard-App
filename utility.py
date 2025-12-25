@@ -1,7 +1,8 @@
 import pandas as pd
 import re
 import nltk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
+from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from collections import Counter
@@ -9,17 +10,8 @@ from nltk.util import ngrams
 #import matplotlib.pyplot as plt
 #import seaborn as sns
 from wordcloud import WordCloud
-
-# Download NLTK resources upon module import
-try:
-    nltk.download('stopwords', quiet=True)
-    nltk.download('punkt', quiet=True)
-    nltk.download('punkt_tab', quiet=True)
-    nltk.download('vader_lexicon', quiet=True)
-    nltk.download('averaged_perceptron_tagger_eng', quiet=True)
-    nltk.download('averaged_perceptron_tagger', quiet=True)  # Ensure the correct tagger is downloaded
-except LookupError:
-    pass # Handle cases where download might fail silently or is already present
+from gensim import corpora
+from gensim.models import LdaModel
 
 def calculate_metrics(chat_df):
     """
@@ -58,7 +50,30 @@ def preprocess_messages(chat_df):
     Cleans messages in the DataFrame by removing URLs, special characters,
     converting to lowercase, and removing stopwords.
     """
+    # 4.a. Ensure NLTK resources are downloaded
+    try:
+        stopwords.words('english')
+    except LookupError:
+        nltk.download('stopwords')
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
+    try:
+        nltk.data.find('tokenizers/punkt_tab')
+    except LookupError:
+        nltk.download('punkt_tab')
+    try:
+        nltk.data.find('corpora/wordnet')
+    except LookupError:
+        nltk.download('wordnet')
+    try:
+        nltk.data.find('corpora/omw-1.4')
+    except LookupError:
+        nltk.download('omw-1.4')
+
     stop_words = set(stopwords.words('english'))
+    lemmatizer = WordNetLemmatizer()
 
     # 4.b. Define a nested helper function to clean individual messages
     def _clean_message(message):
@@ -71,7 +86,7 @@ def preprocess_messages(chat_df):
         message = message.lower()
         # iv. Tokenize and remove stopwords/single-character words
         words = word_tokenize(message)
-        words = [word for word in words if word not in stop_words and len(word) > 1] # Ensure `word` is defined for the comprehension
+        words = [lemmatizer.lemmatize(word) for word in words if word not in stop_words and len(word) > 1] # Ensure `word` is defined for the comprehension
         return ' '.join(words)
 
     # 4.c. Apply this helper function to the 'Message' column
@@ -103,6 +118,10 @@ def extract_keyphrases(cleaned_messages, top_n=20):
     """
     Extracts keyphrases (noun phrases) from cleaned messages.
     """
+    try:
+        nltk.data.find('taggers/averaged_perceptron_tagger_eng')
+    except LookupError:
+        nltk.download('averaged_perceptron_tagger_eng')
 
     all_phrases = []
     grammar = r"""
@@ -125,6 +144,28 @@ def extract_keyphrases(cleaned_messages, top_n=20):
 
     phrase_freq = Counter(filtered_phrases)
     return pd.DataFrame(phrase_freq.most_common(top_n), columns=['Keyphrase', 'Frequency'])
+
+def perform_topic_modeling(cleaned_messages, num_topics=5):
+    """
+    Performs Latent Dirichlet Allocation (LDA) Topic Modeling on cleaned messages.
+    """
+    tokenized_messages = [message.split() for message in cleaned_messages if message.strip()]
+
+    if not tokenized_messages:
+        return None
+
+    # Create a dictionary and corpus for LDA
+    dictionary = corpora.Dictionary(tokenized_messages)
+    corpus = [dictionary.doc2bow(text) for text in tokenized_messages]
+
+    # Train the LDA model
+    lda_model = LdaModel(corpus, num_topics=num_topics, id2word=dictionary, passes=15, random_state=100)
+
+    topics_data = []
+    for idx, topic in lda_model.print_topics(-1):
+        topics_data.append({'Topic': f"Topic {idx+1}", 'Words': topic})
+
+    return pd.DataFrame(topics_data)
 
 def perform_content_analysis(chat_df):
     """
@@ -154,6 +195,15 @@ def perform_content_analysis(chat_df):
 
     # Extract and store keyphrases
     content_analysis_results['top_keyphrases'] = extract_keyphrases(chat_df['Cleaned_Message'])
+
+    # Perform and store topic modeling results
+    content_analysis_results['topic_modeling_results'] = perform_topic_modeling(chat_df['Cleaned_Message'])
+
+    # 6.e. Ensure NLTK vader_lexicon is downloaded
+    try:
+        nltk.data.find('sentiment/vader_lexicon.zip')
+    except LookupError:
+        nltk.download('vader_lexicon')
 
     sia = SentimentIntensityAnalyzer()
 
