@@ -1,9 +1,3 @@
-name: Sync to Hugging Face Hub (strip all .zip)
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-
 jobs:
   sync-to-hub:
     runs-on: ubuntu-latest
@@ -13,21 +7,23 @@ jobs:
           fetch-depth: 0
           lfs: true
 
+      - name: Configure git author (global)
+        run: |
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+
       - name: Push to hub (strip all .zip files)
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           set -euo pipefail
 
-          git config user.email "actions@github.com"
-          git config user.name "github-actions[bot]"
-
+          # (No need to set local user.name/email here because we set them globally above)
           # Prepare a clean temporary directory for the deploy repo
           DEPLOY_DIR="$(mktemp -d)"
           echo "deploy dir: $DEPLOY_DIR"
 
           # Copy working tree excluding .git and .zip files
-          # rsync is used to preserve file structure and avoid copying .git
           rsync -a --exclude='.git' --exclude='*.zip' ./ "$DEPLOY_DIR/"
 
           cd "$DEPLOY_DIR"
