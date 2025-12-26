@@ -1,8 +1,20 @@
+---
+title: WhatsApp Chat Analysis
+emoji: 📊
+colorFrom: blue
+colorTo: green
+sdk: streamlit
+sdk_version: "1.25.0"
+app_file: app.py
+pinned: false
+---
+
 # 📊 WhatsApp Chat Analysis Dashboard
 
 ## Overview
 
 WhatsApp chats contain a huge amount of hidden information—activity patterns, engagement levels, sentiment, and recurring topics—but they are completely unstructured and hard to analyze manually.
+This is a Streamlit-based app for analyzing WhatsApp chat data. Upload your chat files to visualize insights such as message distribution, sentiment analysis, and more.
 
 This project is an **interactive Streamlit-based dashboard** that converts raw WhatsApp chat exports into **clear, visual, and actionable insights**. Instead of scrolling through thousands of messages, users can instantly understand **who talks the most, when conversations peak, what topics dominate, and what the overall sentiment looks like**.
 
