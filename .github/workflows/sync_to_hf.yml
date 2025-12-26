@@ -26,7 +26,8 @@ jobs:
           git init $deploy_dir
           cd $deploy_dir
           git checkout -b hf-deploy
-          cp -r ../* .
+          # Copy only necessary files
+          rsync -av --exclude='.git' --exclude='venv' ../ .
           git add .
           git commit -m "Deploy to Hugging Face"
           git remote add hf "https://gurunagesh1477:${HF_TOKEN}@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App"
