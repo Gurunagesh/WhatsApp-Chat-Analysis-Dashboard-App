@@ -1,34 +1,21 @@
-name: Sync to Hugging Face
-
+name: Sync to Hugging Face Hub
 on:
   push:
-    branches:
-      - main
+    branches: [main] # Runs every time you push to the main branch
+  workflow_dispatch: # Allows you to run this manually from the Actions tab
 
 jobs:
-  deploy:
+  sync-to-hub:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true # Ensures large files (models/data) are handled correctly
 
-      - name: Set Git User
+      - name: Push to hub
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }} # Uses the secret you saved earlier
         run: |
-          git config --global user.email "mudamochuguru@gmail.com"
-          git config --global user.name "Gurunagesh"
-
-      - name: Deploy to Hugging Face
-        run: |
-          set -euo pipefail
-          deploy_dir=$(mktemp -d)
-          echo "deploy dir: $deploy_dir"
-          git init $deploy_dir
-          cd $deploy_dir
-          git checkout -b hf-deploy
-          # Copy only necessary files
-          rsync -av --exclude='.git' --exclude='venv' --exclude='/tmp' --exclude='/systemd-private-*' ../ ./
-          git add .
-          git commit -m "Deploy to Hugging Face"
-          git remote add hf "https://gurunagesh1477:${HF_TOKEN}@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App"
-          git push --force hf hf-deploy:main
+          # Replace <YOUR_HF_USERNAME> and <YOUR_SPACE_NAME> below
+          git push --force https://gurunagesh1477:$HF_TOKEN@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App main
