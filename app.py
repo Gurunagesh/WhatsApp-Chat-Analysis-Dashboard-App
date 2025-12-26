@@ -222,7 +222,7 @@ if uploaded_files:
                     st.warning("Sample Negative Messages:")
                     st.dataframe(content_analysis_results['sample_negative_messages'], use_container_width=True)
                 with col_neu:
-                    st.neutral("Sample Neutral Messages:")
+                    st.info("Sample Neutral Messages:")
                     st.dataframe(content_analysis_results['sample_neutral_messages'], use_container_width=True)
 
                 with st.expander("View Raw Chat Data"):
