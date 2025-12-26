@@ -13,9 +13,9 @@ jobs:
           fetch-depth: 0
           lfs: true # Ensures large files (models/data) are handled correctly
 
-      - name: Push to hub
+      - name: Push to Hugging Face
         env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }} # Uses the secret you saved earlier
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          # Replace <YOUR_HF_USERNAME> and <YOUR_SPACE_NAME> below
-          git push --force https://gurunagesh1477:$HF_TOKEN@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App main
+          git remote add hf https://gurunagesh1477:$HF_TOKEN@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App
+          git push --force hf main
