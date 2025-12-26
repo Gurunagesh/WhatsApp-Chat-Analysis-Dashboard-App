@@ -18,30 +18,23 @@ jobs:
         run: |
           set -euo pipefail
 
-          # (No need to set local user.name/email here because we set them globally above)
           # Prepare a clean temporary directory for the deploy repo
           DEPLOY_DIR="$(mktemp -d)"
           echo "deploy dir: $DEPLOY_DIR"
 
-          # Copy working tree excluding .git and .zip files
           rsync -a --exclude='.git' --exclude='*.zip' ./ "$DEPLOY_DIR/"
 
           cd "$DEPLOY_DIR"
 
-          # Initialize a new local git repo for deployment
           git init
           git checkout -b hf-deploy
-
-          # Add files (if any)
           git add -A
 
-          # If there are no staged changes, create an explicit empty commit so hf-deploy exists
           if git diff --cached --quiet; then
             git commit --allow-empty -m "Deploy to Hugging Face (strip .zip files) [empty]"
           else
             git commit -m "Deploy to Hugging Face (strip .zip files)"
           fi
 
-          # Push to the Hugging Face space main branch (force)
           git remote add hf "https://gurunagesh1477:${HF_TOKEN}@huggingface.co/spaces/gurunagesh1477/WhatsApp-Chat-Analysis-Dashboard-App"
           git push --force hf hf-deploy:main
