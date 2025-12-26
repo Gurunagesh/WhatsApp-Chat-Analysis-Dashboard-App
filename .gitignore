@@ -1,4 +1,5 @@
 venv/
 "sample_chat.zip"
 "sample_whatsapp_chat.zip" 
-"sample_whatsapp_chat.zip" 
+
+"*.zip"  
